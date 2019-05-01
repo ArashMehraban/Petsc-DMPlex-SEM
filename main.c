@@ -238,6 +238,7 @@ PetscErrorCode dmCreateSEMSection(DM *dm, AppCtx user){
       ierr = PetscFree(numDof);CHKERRQ(ierr);
     }
     ierr = DMSetDefaultSection(*dm, s);CHKERRQ(ierr);
+    ierr = PetscSectionView(s, PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
     ierr = DMPlexCreateSpectralClosurePermutation(*dm, PETSC_DETERMINE,s);CHKERRQ(ierr);
   PetscFunctionReturn(0);
 }
