@@ -66,6 +66,9 @@ PetscErrorCode createDistributedDM(MPI_Comm comm, AppCtx user, DM *dm){
 
 
   PetscFunctionBeginUser;
+  if(user.k[0] >= 2){
+      interpolate = PETSC_TRUE;
+}
     ierr = DMPlexCreateFromFile(comm, filename, interpolate, dm);CHKERRQ(ierr);
     ierr = DMPlexDistribute(*dm, 0, NULL, &distributedMesh);CHKERRQ(ierr);
   	if (distributedMesh) {
@@ -256,11 +259,13 @@ int main(int argc, char **argv)
 
   ierr = PetscInitialize(&argc,&argv,(char*)0,help); CHKERRQ(ierr);
     ierr = processUserOptions(PETSC_COMM_WORLD, &user);CHKERRQ(ierr);
+    // for(PetscInt i=0; i<1;i++)
+    //     ierr = PetscPrintf(PETSC_COMM_SELF, "Nc %D\n", user.Nc[i]);CHKERRQ(ierr);
     ierr = createDistributedDM(PETSC_COMM_WORLD, user, &dm);CHKERRQ(ierr);
     ierr = dmCreateSEMSection(&dm, user);CHKERRQ(ierr);
     ierr = DMGetLocalVector(dm,&Ul);CHKERRQ(ierr);
     ierr = VecGetSize(Ul, &Ulsz);CHKERRQ(ierr);
-    ierr = PetscPrintf(PETSC_COMM_SELF, "Vec Size %D\n", Ulsz);CHKERRQ(ierr);;
+    ierr = PetscPrintf(PETSC_COMM_SELF, "Vec Size %D\n", Ulsz);CHKERRQ(ierr);
   ierr = PetscFinalize();CHKERRQ(ierr);
 return 0;
 }//end of main
